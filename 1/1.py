@@ -1,6 +1,10 @@
-def main():
+from pathlib import Path
+
+input_path = Path(__file__).parent / "input.txt"
+
+def part_1():
     res, curr = 0, 50
-    with open('input.txt') as file:
+    with open(input_path) as file:
         for line in file:
             input = line.rstrip()
             clicks = int(input[1:]) % 100
@@ -20,13 +24,48 @@ def main():
                 res += 1
     return res
 
-print(main())
 
+def part_2():
+    p2, curr = 0, 50
+    with open(input_path) as file:
+        for line in file:
+            input = line.rstrip()
+            clicks = int(input[1:])
+            if input[0] == 'R':
+                if clicks > 99 - curr:
+                    remaining = clicks - (99 - curr)
+                    while remaining:
+                        if remaining > 100:
+                            remaining -= 100
+                            p2 += 1
+                        else:
+                            curr = remaining - 1
+                            remaining = 0
+                            if curr != 0:
+                                p2 += 1
+                
+                else:
+                    curr += clicks
+            
+            else:
+                if clicks > curr:
+                    remaining = clicks - curr
+                    while remaining:
+                        if remaining > 100:
+                            remaining -= 100
+                            p2 += 1
+                        else:
+                            if curr != 0:
+                                p2 += 1
+                            curr = 100 - remaining
+                            remaining = 0
+                else:
+                    curr -= clicks
+            
+            if curr == 0:
+                p2 += 1
 
-# SUBTRACTION case:
-# if rotation > curr: do curr - curr, 100 - remainder
-# remainder = rotation - curr
+    return p2
 
-# ADDITION CASE:
-# if rotation > 99 - curr: do curr + (99 - curr), remainder + 1
-# remainder = rotation - (99 - curr)
+print(part_1())
+print(part_2())
