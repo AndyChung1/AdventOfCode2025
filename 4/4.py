@@ -18,75 +18,50 @@ def get_input_2():
     return lines
 
 
-def part_1():
-    def check_roll(r, c):
-        return not (
-            not 0 <= r < len(lines)
-            or not 0 <= c < len(lines[0])
-            or lines[r][c] == '.'
-        )
+def is_roll(r, c, grid):
+    return not (
+        not 0 <= r < len(grid)
+        or not 0 <= c < len(grid[0])
+        or grid[r][c] == '.'
+    )
 
-    def dfs(r, c):
-        if (
-            not 0 <= r < len(lines)
-            or not 0 <= c < len(lines[0])
-            or lines[r][c] == '.'
-        ):
-            return
 
-        adjacent_rolls = 0
-        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-            if check_roll(r + dr, c + dc):
-                adjacent_rolls += 1
+def dfs(r, c, grid):
+    if (
+        not 0 <= r < len(grid)
+        or not 0 <= c < len(grid[0])
+        or grid[r][c] == '.'
+    ):
+        return
 
-        if adjacent_rolls < 4:
-            return True
-    
+    adjacent_rolls = 0
+    for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+        if is_roll(r + dr, c + dc, grid):
+            adjacent_rolls += 1
+
+    if adjacent_rolls < 4:
+        return True
+
+
+def part_1():    
     lines = get_input_1()
     res = 0
     for r in range(len(lines)):
         for c in range(len(lines[0])):
-            if dfs(r, c):
+            if dfs(r, c, lines):
                 res += 1
 
     return res
 
-print(part_1())
-
 
 def part_2():
-    def check_roll(r, c):
-        return not (
-            not 0 <= r < len(lines)
-            or not 0 <= c < len(lines[0])
-            or lines[r][c] == '.'
-            or lines[r][c] == 'x'
-        )
-
-    def dfs(r, c):
-        if (
-            not 0 <= r < len(lines)
-            or not 0 <= c < len(lines[0])
-            or lines[r][c] == '.'
-            or lines[r][c] == 'x'
-        ):
-            return
-
-        adjacent_rolls = 0
-        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-            if check_roll(r + dr, c + dc):
-                adjacent_rolls += 1
-
-        if adjacent_rolls < 4:
-            return True
-
     def traverse_grid(grid):
         rolls_removed = 0
         for r in range(len(grid)):
             for c in range(len(grid[0])):
-                if dfs(r, c):
+                if dfs(r, c, grid):
                     rolls_removed += 1
-                    grid[r][c] = 'x'
+                    grid[r][c] = '.'
 
         return rolls_removed
 
@@ -100,4 +75,6 @@ def part_2():
 
     return total
 
+
+print(part_1())
 print(part_2())
